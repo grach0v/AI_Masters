@@ -1,0 +1,107 @@
+\documentclass[12pt]{exam}
+\usepackage{amsthm}
+\usepackage{libertine}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{multicol}
+\usepackage[shortlabels]{enumitem}
+\usepackage{siunitx}
+\usepackage{cancel}
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{setspace}
+
+
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\pgfplotsset{width=10cm,compat=1.9}
+\usepgfplotslibrary{external}
+\tikzexternalize
+
+\newcommand{\class}{AI Masters Algorithms} 
+\newcommand{\examnum}{Homework 3} 
+\newcommand{\examdate}{\today} 
+\newcommand{\timelimit}{}
+\doublespacing
+
+\begin{document}
+\pagestyle{plain}
+\thispagestyle{empty}
+
+\noindent
+\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} r @{\extracolsep{6pt}} l}
+\textbf{\class} & \textbf{Name:} & \textit{Денис Грачев}\\
+\textbf{\examnum} &&\\
+\textbf{\examdate} &&\\
+\end{tabular*}\\
+\rule[2ex]{\textwidth}{2pt}
+% ---
+
+\section*{Task 1}
+Запишем рекурентную формулу (для $n \leq 2022$ считаем $f(n)$ константой не превышающей 2022)
+$$ f(n) = 3f(n / 4) + c $$
+$$ d = \log_4(3) < \frac{1}{2} $$
+Первый случай  
+$$ c = O(n^{d - \varepsilon}) \: \textit{где} \: \varepsilon = d - \frac{1}{2}$$ 
+Тогда из теоремы о рекурсии $a = 3, b = 4, f(n) = c$ следует что
+$f(n) = \Theta (n ^ {\log_4(3)})$ 
+
+\section*{Task 2}
+\subsection*{a}
+$$ T(n) = 36 T\left( \floor*{\frac{n}{6}} \right) + n^2$$
+Применим теорему о рекурсии, где $a = 36, b = 6, f(n) = n^2$, \\
+тогда $d = \log_6(36) = 2, \: f(n) = \Theta(n^d)$. \\
+Следовательно $T(n) = \Theta(n^2 \log(n))$
+
+\subsection*{b}
+$$ T(n) = 3 T \left( \floor*{\frac{n}{3}} \right) + n^2$$
+Применим теорему о рекурсии, где $a = 3, b = 3, f(n) = n^2$, \\
+тогда $d = \log_3(3) = 1,
+\: f(n) = n^2 = \Omega(n^{d + 0.1 = 1.1}), 
+\: a f \left( \frac{n}{b} \right) = 3 \frac{n^2}{9} = \frac{n^2}{3} \leq n^2 = f(n)$ \\
+По третьему случаю $T(n) = \Theta(f(n)) = \Theta(n^2)$
+
+\subsection*{c}
+$$T(n) = 4 T \left( \floor*{ \frac{n}{2}} \right) + \floor*{\frac{n}{\log(n)}}$$
+Применим теорему о рекурсии, где $a = 4, b = 2, f(n) = \frac{n}{\log(n)}$, \\
+тогда $d = \log_2(4) = 2, 
+\: f(n) = \frac{n}{\log (n)} \leq n = O(n^{d - 1 = 1})$. \\
+По 1 случаю $T(n) = \Theta(n^d) = \Theta(n^2)$.
+
+\section*{Task 3}
+\subsection*{1}
+$$ T(n) = n T \left( \frac{n}{2} \right) + cn$$
+Высота дерева будет $h = \log_2(n)$. \\
+Посчитаем сколько операций на каждом уровне рекурсии.\\
+\begin{center}
+\begin{tabular}{c | c | c | c | c}
+    глубина дерева & аргумент листа &количество листьев & операций в листе & операций всего \\
+    \hline
+    1 & $n$ & 1 & $cn$ & $cn$\\
+    2 & $\frac{n}{2}$ & $n$ & $\frac{cn}{2}$ & $\frac{cn^2}{2}$ \\
+    3 & $\frac{n}{4}$ & $\frac{n^2}{2}$ & $\frac{cn}{4}$ & $\frac{cn^3}{8}$ \\ 
+    4 & $\frac{n}{8}$ & $\frac{n^3}{8}$ & $\frac{cn}{8}$ & $\frac{cn^4}{64}$ \\ 
+    5 & $\frac{n}{16}$ & $\frac{n^4}{64}$ & $\frac{cn}{16}$ & $\frac{cn^5}{1024}$ \\ 
+    $\ldots$ & $\ldots$ & $\ldots$ & $\ldots$ & $\ldots$ \\
+    
+    k + 1 & 
+    $\frac{n}{2^k} = 2^{h - k}$ & 
+    $\frac{n^{k+1}}{2^{\frac{k(k-1)}{2}}} = 2^{h(k + 1) - \frac{k(k-1)}{2}}$ & 
+    $\frac{cn}{2^k} = c 2 ^ {h - k}$ & 
+    $\frac{cn^{k+1}}{2^{\frac{k(k+1)}{2}}} = c 2 ^ {h(k + 1) - \frac{k(k+1)}{2}}$ \\ 
+    
+    $\ldots$ & $\ldots$ & $\ldots$ & $\ldots$ & $\ldots$ \\
+    h & 1 & $2 ^ {\frac{h^2 + 3h}{2}}$ & $c$ &  
+    
+\end{tabular}
+\end{center}
+
+\end{document}
