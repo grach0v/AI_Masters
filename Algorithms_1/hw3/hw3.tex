@@ -76,6 +76,7 @@ $$T(n) = 4 T \left( \floor*{ \frac{n}{2}} \right) + \floor*{\frac{n}{\log(n)}}$$
 \: f(n) = \frac{n}{\log (n)} \leq n = O(n^{d - 1 = 1})$. \\
 По 1 случаю $T(n) = \Theta(n^d) = \Theta(n^2)$.
 
+\newpage
 \section*{Task 3}
 \subsection*{1}
 $$ T(n) = n T \left( \frac{n}{2} \right) + cn$$
@@ -86,22 +87,61 @@ $$ T(n) = n T \left( \frac{n}{2} \right) + cn$$
     глубина дерева & аргумент листа &количество листьев & операций в листе & операций всего \\
     \hline
     1 & $n$ & 1 & $cn$ & $cn$\\
-    2 & $\frac{n}{2}$ & $n$ & $\frac{cn}{2}$ & $\frac{cn^2}{2}$ \\
-    3 & $\frac{n}{4}$ & $\frac{n^2}{2}$ & $\frac{cn}{4}$ & $\frac{cn^3}{8}$ \\ 
-    4 & $\frac{n}{8}$ & $\frac{n^3}{8}$ & $\frac{cn}{8}$ & $\frac{cn^4}{64}$ \\ 
-    5 & $\frac{n}{16}$ & $\frac{n^4}{64}$ & $\frac{cn}{16}$ & $\frac{cn^5}{1024}$ \\ 
+    2 & $\frac{n}{2}$ & $n$ & $c \frac{n}{2}$ & $n c\frac{n}{2} = c\frac{n^2}{2}$ \\
+    3 & $\frac{n}{4}$ & $\frac{n}{2} n = \frac{n^2}{2}$ & $c \frac{n}{4}$ & $\frac{n^2}{2} c\frac{n}{4} = c\frac{n^3}{8}$ \\
+    4 & $\frac{n}{8}$ & $\frac{n}{4} \frac{n^2}{2} = \frac{n^3}{8}$ & $c \frac{n}{8}$ & $\frac{n^3}{8} c\frac{n}{8} = c\frac{n^4}{64}$ \\
+    5 & $\frac{n}{16}$ & $\frac{n}{8} \frac{n^3}{8} = \frac{n^4}{64}$ & $c \frac{n}{16}$ & $\frac{n^4}{64} c\frac{n}{16} = c\frac{n^5}{1024}$ \\
     $\ldots$ & $\ldots$ & $\ldots$ & $\ldots$ & $\ldots$ \\
     
     k + 1 & 
     $\frac{n}{2^k} = 2^{h - k}$ & 
-    $\frac{n^{k+1}}{2^{\frac{k(k-1)}{2}}} = 2^{h(k + 1) - \frac{k(k-1)}{2}}$ & 
-    $\frac{cn}{2^k} = c 2 ^ {h - k}$ & 
-    $\frac{cn^{k+1}}{2^{\frac{k(k+1)}{2}}} = c 2 ^ {h(k + 1) - \frac{k(k+1)}{2}}$ \\ 
-    
+    $\frac{n^k}{2^{\frac{k(k-1)}{2}}} = 2^{hk - \frac{k(k-1)}{2}}$ & 
+    $c\frac{n}{2^k} = c 2 ^ {h - k}$ & 
+    $c 2 ^ {hk - \frac{k(k-1)}{2} + h - k}$ \\ 
     $\ldots$ & $\ldots$ & $\ldots$ & $\ldots$ & $\ldots$ \\
-    h & 1 & $2 ^ {\frac{h^2 + 3h}{2}}$ & $c$ &  
+
+    h & 1 & $2 ^ {h(h-1) - \frac{(h-1)(h-2)}{2}}$ & $c$ & $c2 ^ {h(h-1) - \frac{(h-1)(h-2)}{2}}$  
     
 \end{tabular}
 \end{center}
 
+\textit{В формулах в табличке выше могли потеряться +- 1, в формуле ниже все работает}\\
+\begin{align*}
+    T(n) &= \sum_{k = 1}^h c 2 ^ {h(k - 1) - \frac{(k - 1)(k - 2)}{2} + h - k + 1}  \\
+         &= c \sum_{k = 1}^h 2 ^ {hk - \frac{k^2 + k}{2}}
+\end{align*}
+Получившаяся сумма не является геометрической прогрессией и явно оценить ее сложность не получилось. \\
+Однако можно оценить сложность $\log (T(n))$. \\
+\begin{align*}
+\log (T(n)) &= \log (c \sum_{k = 1}^h 2 ^ {hk - \frac{k^2 + k}{2}}) \qquad \textit{т.к.} \: k^2 \leq kh \\
+            &= c' \log \left( \sum_{k = 1}^h \Theta(2 ^ {c_1 h k}) \right) \\
+            &= c' \log \left( \Theta \left( \frac{2^{c_1 h^2 + c_1h} - 2^{c_1h}}{2^{c_1h} - 1} \right) \right) \\
+            &= c' \log \left( \Theta \left( 2^{c_1 h^2} \right)\right) \\
+            &= \Theta \left( \log( 2^{c1 h^2} ) \right) \\
+            &= \Theta (h^2)
+\end{align*}
+
+\section*{Task 4}
+
+
 \end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

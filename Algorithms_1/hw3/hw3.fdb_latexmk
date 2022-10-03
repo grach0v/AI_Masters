@@ -1,6 +1,6 @@
 # Fdb version 3
-["pdflatex"] 1664753374 "/home/denis/Documents/AI_Masters/Algorithms_1/hw3/hw3.tex" "hw3.pdf" "hw3" 1664753375
-  "/home/denis/Documents/AI_Masters/Algorithms_1/hw3/hw3.tex" 1664753374 3942 efcf5089ee86c6f98dfda16c3f2ec07f ""
+["pdflatex"] 1664839376 "/home/denis/Documents/AI_Masters/Algorithms_1/hw3/hw3.tex" "hw3.pdf" "hw3" 1664839377
+  "/home/denis/Documents/AI_Masters/Algorithms_1/hw3/hw3.tex" 1664839376 5249 91c19a58ad4ce8ecf96d9fe93c508c8d ""
   "/usr/share/texmf-dist/fonts/enc/dvips/libertinegc/lib-t2a.enc" 1650179560 3019 357e0e434b9c61bc8f6dea46ca690c5b ""
   "/usr/share/texmf-dist/fonts/enc/dvips/libertinegc/lib-t2a1.enc" 1650179560 3021 0ed71735eb51747d3e240fb4aab3fb90 ""
   "/usr/share/texmf-dist/fonts/enc/dvips/libertinegc/lib-t2a2.enc" 1650179560 3024 f8818550fbd9b1ca17a479ce8cdcd114 ""
@@ -221,8 +221,8 @@
   "/usr/share/texmf-dist/web2c/texmf.cnf" 1650183167 39911 2da6c67557ec033436fe5418a70a8a61 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1663102392 4281220 822941bc68bde1085e18d1e3ee7264bf ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1663102052 2927661 ae22e7fd63e3c4ee228df7b256454379 ""
-  "hw3.aux" 1664753375 429 f300e31967a77ba0d29e123fd22a1ab1 "pdflatex"
-  "hw3.tex" 1664753374 3942 efcf5089ee86c6f98dfda16c3f2ec07f ""
+  "hw3.aux" 1664839377 429 90e5ccac2ba2208e40d0df4a619ef1ee "pdflatex"
+  "hw3.tex" 1664839376 5249 91c19a58ad4ce8ecf96d9fe93c508c8d ""
   (generated)
   "hw3.aux"
   "hw3.auxlock"
