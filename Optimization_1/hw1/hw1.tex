@@ -18,7 +18,6 @@
 \usepackage[utf8]{inputenc}
 \usepackage[russian]{babel}
 
-
 \pgfplotsset{width=10cm,compat=1.9}
 \usepgfplotslibrary{external}
 \tikzexternalize
@@ -42,6 +41,72 @@
 \end{tabular*}\\
 \rule[2ex]{\textwidth}{2pt}
 % ---
+
+\section*{Task 1}
+\subsection*{$\Rightarrow$}
+Пусть $V$ - выпуклое множество. 
+Прямая $l$ так же выпклое множество.
+Пересечение выпкулых множеств выпукло, следовательно $V \cap l$ - выпуклое.
+
+\subsection*{$\Leftarrow$}
+Пусть $V: \: \forall l: \: V \cap l - \textit{выпуклое} $. \\
+Тогда $\forall x, y \in V$ рассмотрим $l: x, y \in l$. 
+Тогда $x, y \in V \cap l$ следовательно, так как $V \cap l - \textit{выпуклое}$, 
+то $[x, y] \in V \cap l \Rightarrow [x, y] \in V$, следовательно $V$ - выпуклое.
+
+\section*{Task 2}
+$\mathcal{C}=\left\{\mathbf{x} \in \mathbb{R}^n \mid \mathbf{x}^{\top} \mathbf{A} \mathbf{x}+\mathbf{b}^{\top} \mathbf{x}+c \leq 0\right\}$.\\
+Для того чтобы доказать что $\mathcal{C}$ - выпуклое, 
+достаточно доказать что $\forall x, y \in \mathcal{C}: \frac{x + y}{2} \in \mathcal{C}$ 
+(для любой точки между $x, y$ можно построить сходяющуюся последовательность из середин,
+так как $\mathcal{C}$ замкнутое, то и предел последовательности тоже будет лежать в $\mathcal{C}$). \\
+Пусть $x, y \in \mathcal{C}$, тогда 
+\begin{equation}
+    \begin{cases}
+        x^T A x + b^T x + c \leq 0 \qquad \textit{т.к.} \: x \in \mathcal{C} \\
+        y^T A y + b^T y + c \leq 0 \qquad \textit{т.к.} \: y \in \mathcal{C} \\
+        (x - y)^T A (x - y) \geq 0 \qquad \textit{т.к.} \: \mathbf{A} \succ 0
+    \end{cases}
+\end{equation}
+Домножим на 2 и сложим первые два неравенства, третье раскроем.
+
+\begin{equation}
+    \begin{cases}
+        2x^T A x + 2y^T A y + 2b^T (x + y) + 4 c \leq 0 \\
+        x^T A x - x^T A y - y^T A x + y^T A y \geq 0 \\
+    \end{cases}
+\end{equation}
+Вычтем из первого второе неравенство.
+
+$$ x^T A x + y^T A y + x^T A y + y^T A x + 2b^T (x + y) + 4c \leq 0$$
+$$ (x + y)^T A (x + y) + 2b^T (x + y) + 4c \leq 0$$
+$$ \left( \frac{x + y}{2} \right)^T A \left( \frac{x + y}{2} \right) + b^T \left( \frac{x + y}{2} \right) + c \leq 0$$
+Отсюда следует что $\frac{x + y}{2} \in \mathcal{C}$ следовательно $\mathcal{C}$ выпуклое.
+
+\section*{Task 3}
+$M := \left\{\mathbf{X} \mathbf{X}^{\top} \mid \mathbf{X} \in \mathbb{R}^{n \times k}, \operatorname{rank}(\mathbf{X})=k\right\}$.\\
+$A \in M$ тогда $a \in \mathbb{R}^{n \times n}, \: \mathrm{rank} (A) = k$. \\
+$X^T X = U \Sigma V^T V \Sigma U^T = U \Sigma^2 U^T = U \Sigma^2 U^{-1}$ - ЖНФ,   
+следовательно $M$ - множество матриц $\mathbb{R}^{n \times n}$ с $k$ ненулевыми положительными собственными значениями.\\
+Докажем, что коническая оболочка таких матриц - матрицы с $k$ и более ненулевыми положительными значениями. \\
+
+\subsection*{$\Rightarrow$}
+Докажем по индукции, что если мы можем получить $r$ произвольных положительных собственных значений
+то можем и $r + 1$.\\
+Пусть искомая матрица имеет вид $U \mathrm{diag} (\lambda_1, \ldots \lambda_{r + 1}, 0, \ldots 0) U^{-1}$.\\
+Возьмем 
+$A = U \mathrm{diag} \left(\lambda_1 , \frac{\lambda_2}{2}, \ldots, \frac{\lambda_{r}}{2}, 0, \ldots 0 \right) U^{-1}$, 
+$B = U \mathrm{diag} \left(0, \frac{\lambda_2}{2}, \ldots, \frac{\lambda_{r}}{2}, \lambda_{r + 1}, 0, \ldots 0 \right) U^{-1}$.\\
+Тогда $A + B = U \mathrm{diag} (\lambda_1, \ldots \lambda_{r + 1}, 0, \ldots 0) U^{-1}$.
+Следовательно любая матрица с положительными собственными значениями ранга $k$ и выше лежит в конической оболочке $M$.
+
+\subsection*{$\Leftarrow$}
+Рассмотрим произвольную сумму $A + B = U_1 \Sigma_1^2 U_1^{-1} + U_2 \Sigma_2^2 U_2^{-1}$. \\
+\begin{itemize}
+    \item Так как $A$ и $B$ неотрицательно определенные очевидно что и сумма их неотрицательно определена, 
+    значит сумма этих матриц имеет неотрицательные собственные значения.
+    \item Т.к. $A$ и $B$ положительно определены то $\mathrm{rank}(A + B) \geq k$.
+\end{itemize}
 
  
 \end{document}
