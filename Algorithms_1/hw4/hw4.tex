@@ -1,0 +1,87 @@
+\documentclass[12pt]{exam}
+\usepackage{amsthm}
+\usepackage{libertine}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{multicol}
+\usepackage[shortlabels]{enumitem}
+\usepackage{siunitx}
+\usepackage{cancel}
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{setspace}
+
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+
+
+\pgfplotsset{width=10cm,compat=1.9}
+\usepgfplotslibrary{external}
+\tikzexternalize
+
+\newcommand{\class}{AI Masters Algorithms} 
+\newcommand{\examnum}{Homework 4} 
+\newcommand{\examdate}{\today} 
+\newcommand{\timelimit}{}
+\doublespacing
+
+
+\begin{document}
+\pagestyle{plain}
+\thispagestyle{empty}
+
+\noindent
+\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} r @{\extracolsep{6pt}} l}
+\textbf{\class} & \textbf{Name:} & \textit{Денис Грачев}\\
+\textbf{\examnum} &&\\
+\textbf{\examdate} &&\\
+\end{tabular*}\\
+\rule[2ex]{\textwidth}{2pt}
+% ---
+
+\section*{Task 1}
+Очевидно что отсортированный массив будет выглядеть как 
+$0, 0 \ldots 0, 1, 1, \ldots 1$, причем количество едениц и нулей останется прежним.
+\begin{enumerate}
+    \item Посчитать количество 1. Занимаем $\Theta(n)$, обозначим количество едениц $k$.
+    \item Вписать в массив $n-k$ нулей затем $k$ едениц. Занимает $\Theta(n)$
+\end{enumerate}
+Очевидно что полученный массив соответсвует сортировке изначального массивва.
+
+\section*{Task 2}
+Так как отрезки строго вложенные, то порядок верно следующее 
+$l_i < l_j \Leftrightarrow [l_j, r_j] \subset [l_i, r_i]$, так же $\forall i \neq j: l_i \neq l_j$. \\
+Будем двигать точку $x$ с самого левого края к самому правому. 
+Легко видеть что сначала она пересечет $n$ левых краев, затем $n$ правых краев. 
+Каждый раз при пересечении левого края количество покрываемых ею отрезков увеличивается на 1, 
+каждый раз при пересечении правого отрезка количество покрываемых ею отрезков уменьшается на 1.
+Отсюда легко видеть что точка будет покрыта ровно $\frac{2n}{3}$ отрезками если она находится 
+между $\frac{2n}{3}$ и $\frac{2n}{3} + 1$ левым или правым отрезком 
+(левые надо считать слева, правые справа. Понятно что это будут края одних и тех же отрезков). \\
+Будем сравнивать отрезки по левому краю. Найдем $\frac{2n}{3}$ и $\frac{2n}{3} + 1$ порядковые статистики, 
+обозначим их как $k$ и $m$. Это занимает сложность $O(n)$. 
+Искомые точки находятся в отрезках 
+$[l_k, l_m]$ и $[r_m, l_k]$.
+
+\section*{Task 3}
+\subsection*{1}
+На каждом новом запуске $\mathrm{quicksort}$ длина входа уменьшается хотя бы на 1. 
+Таким образом она не может быть больше $n$. 
+Длина достигает $n$ на массиве $1, 2, 3, \ldots n$, так как каждый раз последний элемент берется как $\mathrm{pivot}$ 
+и $\mathrm{partition}$ возвращает индекс последнего элемента.
+
+\subsection*{2}
+Каждый раз при запуске будем находить медиану текущего массива и менять ее местами с последним элементом.\\
+Тогда вход будет каждый раз делиться на 2 и глубина будет $\Theta(\log(n))$.
+
+\section*{Task 4}
+Пусть $x_1 \leq x_2 \leq \ldots x_n$.\\
+Наиболее наглядный способ - нарисовать график функции $f(s) = \sum_{i = 1}^{2n + 1} | x_i - s |$.
+Функция непрерывная, докажем что $x_{n+1}$ - минимум. 
+
+ 
+\end{document}
