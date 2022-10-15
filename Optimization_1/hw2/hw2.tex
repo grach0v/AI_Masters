@@ -1,0 +1,203 @@
+\documentclass[12pt]{exam}
+\usepackage{amsthm}
+\usepackage{libertine}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{multicol}
+\usepackage[shortlabels]{enumitem}
+\usepackage{siunitx}
+\usepackage{cancel}
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{setspace}
+
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+
+
+\pgfplotsset{width=10cm,compat=1.9}
+\usepgfplotslibrary{external}
+\tikzexternalize
+
+\newcommand{\class}{AI Masters Optimization} 
+\newcommand{\examnum}{Homework 2} 
+\newcommand{\examdate}{\today} 
+\newcommand{\timelimit}{}
+\newcommand{\pluseq}{\mathrel{+}=}
+\newcommand{\minuseq}{\mathrel{-}=}
+\doublespacing
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}{Corollary}[theorem]
+
+\begin{document}
+\pagestyle{plain}
+\thispagestyle{empty}
+
+\noindent
+\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} r @{\extracolsep{6pt}} l}
+\textbf{\class} & \textbf{Name:} & \textit{Денис Грачев}\\
+\textbf{\examnum} &&\\
+\textbf{\examdate} &&\\
+\end{tabular*}\\
+\rule[2ex]{\textwidth}{2pt}
+% ---
+
+% \begin{lemma}
+%     Если функция $f$ выпуклая(вогнутая) то и $x, y, 2x, 2y \in \mathrm{dom} f$, 
+%     то $f(x + y) \leq f(x) + f(y)$.
+% \end{lemma}
+% \begin{proof}
+%     $f(x + y) = f \left( \frac{1}{2} 2x + \frac{1}{2} 2y \right) \leq 
+%     f\left( \frac{1}{2} 2x \right) + f \left( \frac{1}{2} 2y \right) = 
+%     f(x) + f(y)$.
+% \end{proof}
+
+\section*{Task 1}
+Докажем что $(x + y)^\frac{1}{n} \leq x^\frac{1}{n} + y^\frac{1}{n}$.\\
+Это легко видеть если возвести обе части в степень $n$ и раскрыть правую часть по Биному Ньютона.\\
+Слева будет $x + y$, справа $x + y + \textit{что-то положительное}$.\\
+$ f(x) = \left( \prod_{i=1}^n x_i \right) ^ {\frac{1}{n}} = \prod_{i=1}^n x_i ^ {\frac{1}{n}} $\\
+Для доказательства выпуклости достаточно доказать что 
+$f \left( \frac{x + y}{2} \right) \leq \frac{f(x) + f(y)}{2}$. 
+(Так как любую точку отрезка можно представить как предел 
+последовательности середин). \\
+\begin{align*}
+    f \left( \frac{x + y}{2} \right) 
+        &= \prod_{i=1}^n \left( \frac{1}{2} (x_i + y_i) \right) ^ \frac{1}{n} \\
+        &= \frac{1}{2} \prod_{i=1}^n (x_i + y_i)^\frac{1}{n} \\
+        &\geq \frac{1}{2} \prod_{i=1}^n x_i^\frac{1}{n} + y_i^\frac{1}{n} \\
+        &= \frac{1}{2} \left( \prod_{i=1}^n x_i^\frac{1}{n} + \prod_{i=1}^n y_i^\frac{1}{n} + \textit{что-то положительное} \right) \\
+        &\geq \frac{1}{2} (f(x) + f(y))
+\end{align*}
+Следовательно функция $f$ - вогнутая. 
+
+\section*{Task 2}
+$f(x) = \|A x - b \|_2 + \lambda \| x \|_1$ \\
+$\lambda \| x \|_1 $ - линейная функция, 
+следовательно никак не влияет на вторую производную. 
+$\| A x - b \|_2 $ - непрерывно диффернцируемая выпуклая функция 
+(так как норма выпуклая и композиция с линейным преобразованием сохраняет выпуклость), 
+следовательно добавление $\lambda \| x \|_1$ не меняет $f''$ следовательно функция остается выпуклой.
+
+\section*{Task 3}
+$g(x) = \frac{1}{x} \int_0^x f(t) dt = \frac{F(x)}{x} $ (Можем считать, что $f(0) = 0$)\\
+$g'(x) = \frac{f(x)x - F(x)}{x^2}$ \\
+$g''(x) = \frac{(f(x) + xf'(x) - f(x))x^2 - (f(x)x - F(x))2x}{x^4} = \frac{x^3f'(x) - 2x^2f(x) + 2xF(x)}{x^4}$. \\
+$x^4 > 0$, рассмотрим верхнюю часть: $ x^3f'(x) - 2x^2f(x) + 2xF(x)$.
+Докажем что она больше $0$ для многочленов, так как многочлены всюдуплотны среди непрерывных функций, утверждение будет верно и для всех фукнций.\\
+Пусть $f(x) = \sum_{i=0}^n a_i x^{i}$, тогда 
+$$f'(x)x^3 = \sum_{i=0}^n a_i i x^{i + 2}$$
+$$f(x)x^2 = \sum_{i=0}^n a_i x^{i + 2}$$
+$$F(x)x = \sum_{i=0}^n \frac{a_i}{i + 1} x^{i + 2}$$
+
+\begin{align*}
+    x^3f'(x) - 2x^2f(x) + 2xF(x) 
+        &= \sum_{i=0}^n (a_i i - 2 a_i + \frac{2 a_i}{i + 1}) x^{i + 2} \\
+        &= \sum_{i=0}^n (\frac{a_i i^2 + a_i - 2 a_i i - 2a_i + 2 a_i}{i + 1}) x^{i + 2} \\
+        &= \sum_{i=0}^n (\frac{a_i i^2 + a_i - 2 a_i i}{i + 1}) x^{i + 2} \\
+        &= \sum_{i=0}^n (\frac{a_i (i - 1)^2}{i + 1}) x^{i + 2} 
+\end{align*}
+    
+Так как $f$ - выпуклая, то $f''(x) \geq 0$
+\begin{align*}
+    0 \leq f''(x) 
+        &= \sum_{i = 0}^n a_i i (i - 1) x^{i - 2} \Rightarrow \\
+    0 \leq f''(x) x^4 
+        &= \sum_{i = 0}^n a_i i (i - 1) x^{i + 2} \\
+        &= \sum_{i = 0}^n a_i \frac{i(i^2 - 1)}{i + 1} x^{i + 2} 
+\end{align*}
+\textit{Дальше не сходится}.
+
+\section*{Task 4}
+$f(X) = \sum_{i=1}^k \lambda_i(X) = \mathrm{trace}(X)$.\\
+$\mathrm{trace}$ - линейная функция следовательно выпуклая.
+
+\section*{Task 5}
+$f(w) = \sum_{i=1}^m \log (1 + e^{-y_i w^T x_i})$
+Заметим, что $\log (1 + e^{-y_i w^T x_i}) > 0$. \\
+Сравним 
+
+\begin{align*}
+f(\frac{1}{2} w_1 + \frac{1}{2} w_2) \quad &? \quad 
+\frac{1}{2}f(w_1) + \frac{1}{2}f(w_2) \\
+\log (1 + e^{-y_i (\frac{1}{2} w_1 + \frac{1}{2} w_2) X_i}) \quad &? \quad 
+\frac{1}{2}\log(1 + e^{-y_i w_1 X_i}) + \frac{1}{2} \log(1 + e^{-y_i w_2 X_i}) \\
+\log (1 + e^{-y_i \frac{1}{2} w_1 X_i}  e^{-y_i \frac{1}{2} w_2 X_i}) \quad &? \quad 
+\log((1 + e^{-y_i w_1 X_i})^\frac{1}{2} (1 + e^{-y_i w_2 X_i})^\frac{1}{2}) \\
+(1 + e^{-y_i \frac{1}{2} w_1 X_i}  e^{-y_i \frac{1}{2} w_2 X_i})^2 \quad &? \quad 
+(1 + e^{-y_i w_1 X_i}) (1 + e^{-y_i w_2 X_i}) \\
+1 + e^{-y_i w_1 X_i}  e^{-y_i w_2 X_i} + 2 e^{-y_i \frac{1}{2} w_1 X_i}  e^{-y_i \frac{1}{2} w_2 X_i} \quad &? \quad 
+(1 + e^{-y_i w_1 X_i} + e^{-y_i w_2 X_i} + e^{-y_i w_1 X_i}  e^{-y_i w_2 X_i}) \\
+2 e^{-y_i \frac{1}{2} w_1 X_i}  e^{-y_i \frac{1}{2} w_2 X_i} \quad &? \quad 
+e^{-y_i w_1 X_i} + e^{-y_i w_2 X_i} \\
+2 e^{-y_i \frac{1}{2} w_1 X_i}  e^{-y_i \frac{1}{2} w_2 X_i} \quad &\leq \quad 
+e^{-y_i w_1 X_i} + e^{-y_i w_2 X_i}
+\end{align*}
+Последнее верно из неравенства о средних 
+$\sqrt{ab} \leq \frac{a + b}{2} \Leftrightarrow 2\sqrt{ab} \leq a + b$.\\
+Следовательно функция выпуклая.
+
+\section*{Task 6}
+\begin{align*}
+    f(X) 
+        &= (\det (X))^\frac{1}{n} \\
+        &= (\det (U + Vt))^\frac{1}{n} \\
+        &= (\det (I + U^\frac{-1}{2} V U^\frac{-1}{2}t))^\frac{1}{n} (\det(U))^\frac{1}{n}  
+\end{align*}
+Обозначим $U^\frac{-1}{2} V U^\frac{-1}{2} = Q \Lambda Q^T$.
+\begin{align*}
+    g(t) 
+        &~ (\det (I + U^\frac{-1}{2} V U^\frac{-1}{2}t))^\frac{1}{n} \\
+        &= (\det (I + Q \Lambda Q^T))^\frac{1}{n} \\
+        &= (\det (I + \Lambda t))^\frac{1}{n} \\ 
+        &= (\prod 1 + \lambda_i t)^\frac{1}{n}
+\end{align*}
+\begin{align*}
+    g(\frac{1}{2}t_1 + \frac{1}{2}t_2) \quad &? \quad 
+    \frac{1}{2} g(t_1) + \frac{1}{2} g(t_2)\\
+    \left( \prod 1 + \lambda_i (\frac{1}{2}t_1 + \frac{1}{2}t_2) \right)^\frac{1}{n} \quad &? \quad 
+    \frac{1}{2}\left(\prod 1 + \lambda_i t_1\right)^\frac{1}{n} + \frac{1}{2}\left(\prod 1 + \lambda_i t_2\right)^\frac{1}{n}\\ 
+    \prod 1 + \lambda_i (\frac{1}{2}t_1 + \frac{1}{2}t_2) \quad &? \quad 
+    \sum_{k=0}^n {n \choose k} \left(\frac{1}{2}\left(\prod 1 + \lambda_i t_1\right)^\frac{1}{n} \right)^k \left(\frac{1}{2}\left(\prod 1 + \lambda_i t_2\right)^\frac{1}{n} \right)^{n - k}\\
+    % \frac{1}{2^n}\left(\prod 1 + \lambda_i t_1\right) + \frac{1}{2^n}\left(\prod 1 + \lambda_i t_2\right) + \textit{что-то положительное}\\
+    \prod 2 + \lambda_i (t_1 + t_2) \quad &? \quad 
+    \sum_{k=0}^n {n \choose k} \left(\prod 1 + \lambda_i t_1\right)^\frac{k}{n} \left(\prod 1 + \lambda_i t_2\right)^\frac{n - k}{n}\\
+\end{align*}
+
+\section*{Экспоненциальный конус}
+$K = \{ (x, y, z) \in \mathrm{R}^3 \:|\: y > 0, y e^{\frac{x}{y}} \leq z\} $
+Это надграфик функции $f(x, y) = y e ^{\frac{x}{y}}$.\\
+$\nabla f(x, y) = \left(e ^ \frac{x}{y},\: \frac{e^\frac{x}{y} (y - x)}{y} \right)$ \\
+$
+\mathrm{Hess} f(x, y) = 
+\begin{bmatrix}
+    \frac{e^\frac{x}{y}}{y} & \frac{-x e^\frac{x}{y}}{y^2} \\ 
+    \frac{-x e^\frac{x}{y}}{y^2} & \frac{x^2 e^\frac{x}{y}}{y^3} 
+\end{bmatrix}
+$
+Докажем что Гессиан положительно определен
+\begin{align*}
+    (a, b) \mathrm{Hess} f(x, y) (a, b)^T 
+        &= \left(
+        a \frac{e^\frac{x}{y}}{y} + b \frac{-x e^\frac{x}{y}}{y^2}, 
+        a \frac{-x e^\frac{x}{y}}{y^2} + b \frac{x^2 e^\frac{x}{y}}{y^3}
+        \right) (a, b)^T \\
+        &= a^2 \frac{e^\frac{x}{y}}{y} + 2ab \frac{-x e^\frac{x}{y}}{y^2} + b^2 \frac{x^2 e^\frac{x}{y}}{y^3} \\
+        &= \frac{e^\frac{x}{y}}{y} \left( a^2 + 2ab \frac{-x}{y} + b^2 \frac{x^2}{y^2} \right) \\
+        &= \frac{e^\frac{x}{y}}{y} \left( a + b\frac{-x}{y} \right)^2 \geq 0
+\end{align*}
+Следовательно экспоненциальный конус - выпуклый.
+
+\subsection*{Кратчайший путь в графе}
+Пусть $s_{ij}$ - какой-то фиксированный путь из $i$ в $j$.
+Тогда функция $p_{s_{ij}}(c)$ - линейна по $c$ следовательно вогнута. \\
+$p_{ij} = \min_{s_{ij}} p_{s_{ij}}(c)$. Минимум по вогнутым функциям - вогнутая функция.\\
+Следовательно $p_{ij}$ - вогнутая.
+
+\end{document}
