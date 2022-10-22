@@ -1,0 +1,189 @@
+\documentclass[12pt]{exam}
+\usepackage{amsthm}
+\usepackage{libertine}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{multicol}
+\usepackage[shortlabels]{enumitem}
+\usepackage{siunitx}
+\usepackage{cancel}
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{setspace}
+\usepackage{tikz}
+
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+
+
+\pgfplotsset{width=10cm,compat=1.9}
+\usepgfplotslibrary{external}
+
+\newcommand{\class}{AI Masters Algorithms} 
+\newcommand{\examnum}{Homework 6} 
+\newcommand{\examdate}{\today} 
+\newcommand{\timelimit}{}
+\newcommand{\pluseq}{\mathrel{+}=}
+\newcommand{\minuseq}{\mathrel{-}=}
+\doublespacing
+
+
+\begin{document}
+\pagestyle{plain}
+\thispagestyle{empty}
+
+\noindent
+\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} r @{\extracolsep{6pt}} l}
+\textbf{\class} & \textbf{Name:} & \textit{Денис Грачев}\\
+\textbf{\examnum} &&\\
+\textbf{\examdate} &&\\
+\end{tabular*}\\
+\rule[2ex]{\textwidth}{2pt}
+% ---
+\section*{Task 1}
+Обозначим очереди как $a, b$.
+Будем поддерживать следующий инвариант:
+\begin{itemize}
+    \item После каждой операции $b$ - пустая.
+    \item Элементы в $a$ находятся в том же порядке что мы их добавляли.
+\end{itemize}
+Тогда операции push(x) и pop(x) устроены следующим образом.
+\begin{figure}[h]
+    {\tt push(x)}  \{ 
+     
+        \hspace{4mm} {\tt} a.add(x) 
+
+    \} 
+
+    \hfill \break
+
+    {\tt pop()} \{
+        
+        \hspace{4mm} {\tt} while not a.empty() \{ 
+
+            \hspace{8mm} {\tt} x = a.extract() 
+
+            \hspace{8mm} {\tt} if not a.empty() \{ 
+
+                \hspace{12mm} {\tt} b.add(x) 
+
+            \hspace{8mm} \} 
+
+        \hspace{4mm}\} 
+
+        \hspace{4mm} {\tt} while not b.empty() \{ 
+
+            \hspace{8mm} {\tt} a.add(b.extract()) 
+
+        \hspace{4mm}\} 
+
+        \hspace{4mm} {\tt} return x
+    
+    \}
+\end{figure}
+
+То есть при добавлении элемента, мы добавляем его в конец $a$ и инвариант сохраняется.
+При доставании элемента мы перекладываем все кроме последнего элемента в $b$ и 
+затем обратно в том же порядке в $a$, то есть инвариант сохраняется и возвращаем мы последний добавленный элемент.
+
+\section*{Task 2}
+Аналогично пронумеруем все вершины.
+Докажем тогда, что вершина с номером $x$ имеет детей с номерами $3x - 1, 3x, 3x + 1$.
+Соотвественно родитель вершины $x$ имеет номер $\lfloor \frac{x + 1}{3} \rfloor$.
+
+\begin{tikzpicture}
+    \node {1}
+        child { node {2}
+            child {node {5}}
+            child {node {6}}
+            child {node {7}}
+        }
+        child {node {3}}
+        child {node {4}}
+        ;
+\end{tikzpicture}\\
+Пусть это верно для слоя $h$. 
+Тогда самый средний лист этого слоя имеет индекс $3^{h - 1}$. 
+Всего листов на этом слое $3^{h - 1}$, 
+соотвественно самый левый лист имеет индекс $l_h = 3^{h - 1} - \frac{3^{h - 1} - 1}{2}$, 
+самый правый лист имеет индекс $3^{h - 1} + \frac{3^{h - 1} - 1}{2}$. \\
+Тогда самый левый индекс слоя $h + 1$ имеет номер 
+\begin{align*}
+    3^{h - 1} + \frac{3^{h - 1} - 1}{2} + 1 
+        &= \frac{2 * 3^{h - 1} + 3^{h - 1} + 1}{2} \\
+        &= \frac{3^h + 1}{2} \\
+        &= \frac{2 * 3^h - 3^h + 3 - 2}{2} \\
+        &= 3^h - \frac{3^h - 3}{2} - 1 \\
+        &= \left( 3^{h - 1} - \frac{3^{h - 1} - 1}{2} \right) 3 - 1\\
+        &= l_h * 3 - 1
+\end{align*}
+Следовательно для самого левого листа слоя $h$ и его левого ребенка формула работает.
+Очевидно что для остальных его детей формула так же работает, 
+то есть они имеют индексы $3 l_h -1, 3 l_h, 3 l_h + 1$. 
+Тогда формула работает и для следующей вершины слоя $h$ и тд, так как она имеет индекс 
+$l_h + 1$, а ее дети $3l_h + 2, 3l_h + 3, 3l_h + 4 = 3(l_h + 1) - 1, 3(l_h + 1), 3(l_h + 1) + 1$.\\
+База индукции видна на картинке. 
+
+\section*{Task 3} 
+\subsection*{y - предок x}
+Пусть y не предок x. Тогда путь соединяющий x и y проходит через корень (обозначим корень r). 
+Так как дерево бинарное, то они x и y по разным сторонам от r. \\
+Таким образом 
+\begin{itemize}
+    \item либо x < r < y. Не может быть, так как y следующий по возрастанию от x.
+    \item либо x > r > y. Не может быть, так как x < y.
+\end{itemize}
+Следовательно y - предок x.
+
+\subsection*{y самый нижний, чей левый дочерний узел так же является предком x или самим x.}
+Так как y - предок х и y > x, то x находится в левом от y поддереве. 
+Следовательно левый ребенок х является либо предком x либо сам является x.\\
+Пусть z обладает тем же свойством но находится ниже y. 
+Тогда т.к. y - предок x и z предок x, но ниже, то y - предок z и по доказанному ранее 
+z находится в левом поддерве y. Тогда x < z < y, противоречье.
+Следовательно y самый низкий элемент обладающий таким свойством.
+
+\section*{Task 4}
+\subsection*{a предок b либо b предок a}
+Рассмотрим вершину a. 
+Докажем, что либо a предком b, либо b является предком a.
+Аналогично предыдущей задаче, если они находятся по разные стороны от корня, то 
+либо a < r < b, либо a > r > b, оба варианта противоречивы.
+\subsection*{a предок b}
+Пусть a предок b. 
+Так как a < b, то b находится в правом поддереве а. 
+Обозначим левого и правого ребенка b как l и r. 
+Тогда a < l < b < r. Противоречье.
+\subsection*{b предок a}
+Пусть b предок a.
+Так как a < b, то a находится в левом поддереве b. 
+Пусть у a есть правый ребенок r, тогда a < r < b. 
+Противоречье, следовательно правого ребенка у нее нет.
+
+\subsection*{Для с}
+Аналогично для с 
+\begin{itemize}
+    \item либо c предок b, либо b предок c
+    \item c не может быть предком b
+    \item у c не может быть левого ребенка
+\end{itemize}
+
+\section*{Task 5}
+\subsection*{1}
+Каждому множеству $A$ необходимо сопоставить уникальную строку длины $w$.
+Пусть у разных множеств одинаковая строка. 
+Тогда возьмем элемент который принадлежит одному мноежству но не принадлежит другому. 
+В обоих случаях мы получим одинаковый ответ от нашей структуры, соответсвенно один будет неверный. \\
+Мощность множества подмножеств длины $k$ равна ${n \choose k}$. \\
+Мощность множества различных строк длины $w$ равна $2^w$.\\
+Следовательно $2^w \geq {n \choose k}$. \\
+Так же мы должны за $t$ запросов определять лежит ли элемент в $A$. \\
+Количество возможных пар (вопрос, ответ) длины $t$ равно $2 ^ { {w \choose t} }$.
+
+
+
+\end{document}
