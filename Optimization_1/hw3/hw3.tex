@@ -1,0 +1,202 @@
+\documentclass[12pt]{exam}
+\usepackage{amsthm}
+\usepackage{libertine}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{multicol}
+\usepackage[shortlabels]{enumitem}
+\usepackage{siunitx}
+\usepackage{cancel}
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{setspace}
+\usepackage{mathtools}
+
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+
+
+\pgfplotsset{width=10cm,compat=1.9}
+\usepgfplotslibrary{external}
+\tikzexternalize
+
+\newcommand{\class}{AI Masters Optimization} 
+\newcommand{\examnum}{Homework 3} 
+\newcommand{\examdate}{\today} 
+\newcommand{\timelimit}{}
+\newcommand{\pluseq}{\mathrel{+}=}
+\newcommand{\minuseq}{\mathrel{-}=}
+\doublespacing
+
+
+\begin{document}
+\pagestyle{plain}
+\thispagestyle{empty}
+
+\noindent
+\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} r @{\extracolsep{6pt}} l}
+\textbf{\class} & \textbf{Name:} & \textit{Грачев Денис}\\
+\textbf{\examnum} &&\\
+\textbf{\examdate} &&\\
+\end{tabular*}\\
+\rule[2ex]{\textwidth}{2pt}
+% ---
+
+\section*{Сопряженные функции}
+\subsection*{Task 1}
+$$
+    f(x) = \sum_{i=1}^n x_i \log \left( \frac{x_i}{1^T x} \right) 
+$$
+$$
+    f^*(y) = \sup_x \left( (y, x) - f(x) \right) = 
+    \sup_x \sum_{i=1}^n x_i \left( y_i - \log \left( \frac{x_i}{1^T x} \right) \right)
+$$
+Рассмотрим $x = (t, t, \ldots t)$, тогда 
+$$
+    f^*(y) \geq \sup_t \sum_{i=1}^n t \left( y_i - \log \left( \frac{t}{nt} \right) \right) = 
+    t \sum_{i=1}^n (y_i + \log(n)) = \begin{cases}
+        + \infty \:|\:  \sum_{i=1}^n (y_i + \log(n)) > 0, t \rightarrow + \infty \\
+        + \infty \:|\:  \sum_{i=1}^n (y_i + \log(n)) < 0, t \rightarrow - \infty \\
+        0 \:|\: \sum_{i=1}^n (y_i + \log(n)) = 0
+    \end{cases}
+$$
+Пусть $\sum_{i=1}^n (y_i + \log(n))$ = 0, тогда рассмотрим $x = (2t, t, \ldots, t)$.\\
+Аналогично, в зависимости от суммы, $f^*(y) \geq \begin{cases} +\infty \\ 0 \end{cases}$,
+но так как обе суммы не могут одновременно равняться 0, то $f^*(y) \geq + \infty \Rightarrow f^*(y) = +\infty$.
+
+% \begin{align*}
+%     f(x) 
+%         &= \sum_{i=1}^n x_i \log \left( \frac{x_i}{1^T x} \right) \\
+%         &= \sum_{i=1}^n x_i \log(x_i) - x_i 1^T x \\
+%         &= \left( \sum_{i=1}^n x_i \log(x_i) \right) - 1^T x \left( \sum_{i=1}^n x_i \right) \\
+%         &= - (1^T x)^2 + \sum_{i=1}^n x_i \log(x_i) \\
+%         &= \sum_{i=1}^n x_i \log(x_i) - \left( \sum_{i=1}^n x_i \right)^2
+% \end{align*}
+% Тогда 
+% $$\nabla f(x)_i = \log(x_i) + 1 - 2 \sum_{i=j}^n x_j$$
+% $$f^*(y) = \sup_x \left( (y, x) - f(x) \right)$$
+% Так как функция непрерывная и диффернцируемая, то 
+% $$
+% x_0: f^*(y) = (y, x_0) - f(x_0) \Rightarrow 
+% \nabla (y, x_0) - f(x_0) = 0 \Rightarrow 
+% y = \nabla f(x_0)
+% $$
+% Подставим градиент
+% $$ 
+% y_i = \nabla f(x_0)_i = \log(x_{0i}) + 1 - 2\sum_{j=1}^n x_j
+% $$
+% Вычтем из всех уравнений первое
+% $$ 
+% y_i - y_1 =  \log(x_{0i}) - \log(x_{01})
+% $$
+% Выразим $x_{0i}$ через $y$ и $x_{01}$
+% $$
+% x_{0i} = e^{ y_i - y_1} x_{01}
+% $$
+% Рассмотрим первое уравнение
+% $$
+% y_1 = \log(x_{01}) + 1 - 2 \sum_{j=1}^n  e^{ y_j - y_1} x_{01}
+% $$
+
+\subsection*{Task 2}
+Рассмотрим интуитивную геометрическую интерпритацию. \\
+$f(x) = \max_{k=1, \ldots, p} (a_i x + b_i)$ - максимум из нескольких прямых то есть выпуклая функция. \\
+$yx$ - прямая проходящая через 0 с коэфициентом $y$. \\
+Следовательно функция $f_y(x) = xy - f(x)$ - вогнутая. \\
+Пусть $a_m = \max_i a_i < y > 0$, тогда легко видеть что 
+$(xy - f(x)) \xrightarrow[x \rightarrow +\infty]{} +\infty$, 
+следовательно $f^*(y) = + \infty$. \\
+Пусть $a_m = \max_i a_i = y > 0$, тогда $f^*(y) = -b_m$. \\
+Рассмотрим крайнюю точку $x_m$ преломления функции $f(x)$. \\
+Тогда $\forall x \geq x_m: xy - f(x) = -b_m$. \\
+$\forall x < x_m: f(x) > a_m x_m + b_m \:\:,\:\:  yx - f(x) < yx - a_m x_m - b_m = -b_m$.\\
+Следовательно $f^*(y) = -b_m$.\\
+Пусть $a_m = \max_i a_i > y > 0$. 
+Аналогично предыдущему случаю, но с поправкой что $\forall x \geq x_m: xy - f(x) \leq -b_m$ \\
+Следовательно $f^*(y) = -b_m$. Аналогичен случай с $y < 0$, но $a_m = \min_i a_i$\\
+Итого $f^*(y) = \begin{cases}
+    + \infty \: | \: y > \max_i a_i, y > 0 \\
+    -b_m \: | \: y \leq a_m = \max_i a_i, y > 0 \\ 
+    + \infty \: | \: y > \min_i a_i, y < 0 \\
+    -b_m \: | \: y \leq a_m = \min_i a_i, y < 0 \\
+\end{cases}$
+
+\subsection*{Task 3}
+$g(x) = \inf_{x_1 + \ldots x_2 = x} (f_1(x_1) + \ldots f_k(x_k))$, 
+где $f_i$ - выпуклые функции.
+\begin{align*}
+    g^*(y) 
+        &= \sup_x (y, x) - g(x) \\
+        &= \sup_x (y, x) - \inf_{x_1 + \ldots + x_2 = x} (f_1(x_1) + \ldots f_k(x_k)) \\
+        &= \sup_x -\inf_{x_1 + \ldots + x_2 = x} (-y, x) f_1(x_1) + \ldots f_k(x_k) \\
+        &= \sup_x -\inf_{x_1 + \ldots + x_2 = x} f_1(x_1) - (y, x_1) + \ldots f_k(x_k) - (y, x_k) \\
+        &= -\inf_x \inf_{x_1 + \ldots + x_2 = x} \hat{f_1}(x_1) + \ldots \hat{f_k}(x_k) \quad \textit{где} \quad \hat{f_i}(x) = f_i(x) - yx \\
+        &= -\inf_{x_1, \ldots, x_2 } \hat{f_1}(x_1) + \ldots \hat{f_k}(x_k) \quad \textit{где} \quad \hat{f_i}(x) = f_i(x) - yx \\
+        &= - \left( \inf_x \hat{f_1}(x) + \ldots \inf_x \hat{f_k}(x) \right)
+\end{align*}
+
+\subsection*{Task 4}
+$$
+    f(x) = \begin{cases}
+        |x| - \frac{1}{2} \quad | \quad |x| > 1 \\
+        \frac{1}{2} x^2 \quad | \quad |x| \leq 1 
+    \end{cases}
+$$
+Прибегнем к геометрической интерпритации снова.\\
+Так как картинка симметриная, будем рассматривать $y > 0$\\
+Тогда для $|y| > 1: f*(y) = + \infty$.\\
+Для $|y| \leq 1$ супремум достигается на отрезке $[-1, 1]$, поэтому 
+рассмотрим функцию $r_y(x) = xy - \frac{1}{2} x^2$. 
+Ее максимум достигается в точке $y$, следовательно $f*(y) = y$. \\
+$$
+f*(y) = \begin{cases}
+    +\infty \quad | \quad |y| > 1 \\
+    y \quad | \quad |y| \leq 1
+\end{cases}
+$$
+
+\section*{Субдифференциал}
+
+\subsection*{Task 1}
+$$ y^T x = f(x) + f^*(y) \quad \mathrm{iff} \quad y \in \partial f(x) $$
+По определению субдифференциала
+\begin{align*}
+    y \in \partial f(x) 
+        &\Rightarrow \forall x' \in \mathrm{dom} f: f(x') \geq f(x) + (y, x' - x) \\
+        &\Rightarrow \forall x' \in \mathrm{dom} f: f(x') - (y, x') \geq f(x) - (y, x) \\
+        &\Rightarrow \forall x' \in \mathrm{dom} f: (y, x') - f(x') \leq (y, x) - f(x) \\
+        &\Rightarrow (y, x) - f(x) = \sup_t ((y, t) - f(t)) = f*(y) \\
+        &\Rightarrow (y, x) = f(x) + f^*(y)
+\end{align*} 
+
+\subsection*{Task 3}
+$$ a \in \partial f(x) \Leftrightarrow \forall y \in \mathrm{dom} f: f(y) \geq f(x) + (a, y - x)$$
+\begin{align*}
+    f(y) 
+        &= \| y \|_1 = \sum_{i=1}^n | y_i | \\
+        &\geq f(x) + (a, y - x) \\
+        &= \sum_{i=1}^n | x_i | + a_i y_i - a_i x_i
+\end{align*}
+
+Отсюда легко видеть, что $a_i = \begin{cases}
+    -1 \quad | \quad x_i < 0 \\
+    [-1, 1] \quad | \quad x_i = 0 \\
+    1 \quad | \quad x_i > 0 \\
+\end{cases}$
+
+\subsection*{Task 2}
+$$ a \in \partial f(x) \Leftrightarrow \forall y \in \mathrm{dom} f: f(y) \geq f(x) + (a, y - x)$$
+\begin{align*}
+    f(y) 
+        &= \sup_{0 \leq t \leq 1} (y_1 + y_2 t + \ldots + y_n t^{n - 1}) \\
+        &\geq f(x) + (a, y - x) \\
+        &= \sum_{i=1}^n a_i(y_i - x_i) + \sup_{0 \leq t \leq 1} (x_1 + x_2 t + \ldots + x_n t^{n - 1}) \\
+        &= \sup_{0 \leq t \leq 1} (a_1y_1 - a_1x_1 + x_1 + a_2y_2 - a_2x_2 + x_2 t + \ldots + a_ny_n - a_nx_n + x_n t^{n - 1})
+\end{align*}
+
+
+\end{document}
