@@ -1,0 +1,279 @@
+\documentclass[12pt]{exam}
+\usepackage{amsthm}
+\usepackage{libertine}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{multicol}
+\usepackage[shortlabels]{enumitem}
+\usepackage{siunitx}
+\usepackage{cancel}
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{setspace}
+
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+
+\newenvironment{sqcases}{%
+  \matrix@check\sqcases\env@sqcases
+}{%
+  \endarray\right.%
+}
+\def\env@sqcases{%
+  \let\@ifnextchar\new@ifnextchar
+  \left\lbrack
+  \def\arraystretch{1.2}%
+  \array{@{}l@{\quad}l@{}}%
+}
+\makeatother
+
+
+\pgfplotsset{width=10cm,compat=1.9}
+\usepgfplotslibrary{external}
+\tikzexternalize
+
+\newcommand{\class}{AI Masters Optimization} 
+\newcommand{\examnum}{Homework 4} 
+\newcommand{\examdate}{\today} 
+\newcommand{\timelimit}{}
+\newcommand{\pluseq}{\mathrel{+}=}
+\newcommand{\minuseq}{\mathrel{-}=}
+% \doublespacing
+
+
+\begin{document}
+\pagestyle{plain}
+\thispagestyle{empty}
+
+\noindent
+\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} r @{\extracolsep{6pt}} l}
+\textbf{\class} & \textbf{Name:} & \textit{Денис Грачев}\\
+\textbf{\examnum} &&\\
+\textbf{\examdate} &&\\
+\end{tabular*}\\
+\rule[2ex]{\textwidth}{2pt}
+% ---
+
+\section*{Условия оптимальности}
+\subsection*{Task 1}
+$$ \min_x c^T x $$
+$$\mathrm{s.t.}\: x^TAx \leq 1 \:\: \textit{где}\: A \in S^n_{++}$$
+Задача выпуклая, условие Слейтра выполняется (легко найти $x*$ для которого ограничение будет строгое). \\
+Запишем условие ККТ. 
+$$ L(x, \mu) = c^T x + \mu (x^T A x - 1)$$
+$$ L'_x(x, \mu) = c + \mu (A + A^T)x = c + 2 \mu A x = 0$$
+$$ \mu A x = \frac{-c}{2}$$
+$$ x = A^{-1}\frac{-c}{2\mu}$$
+Запишем условие дополняющей нежесткости
+$$ \mu (x^T A x - 1) = 0$$
+\subsubsection*{Пусть $\mu = 0$}
+Тогда для $c \neq 0: L'_x (x, \mu) \neq 0$, следовательно минимум не достигается.
+\subsubsection*{Пусть $x^T A x = 1$}
+Тогда домжножим слева на $x^T$ равенство 
+$$ \mu x^T A x = x^T \frac{-c}{2}$$
+$$ \mu = x^T \frac{-c}{2}$$
+$$ c x^T = -2\mu$$
+$$ c^T x = -2\mu$$
+Подставим $x$ из Лангражиана
+$$ c^T  A^{-1}\frac{-c}{2\mu} = -2\mu$$
+$$ 4\mu^2 = c^T A^{-1} c$$
+$$ \mu = \frac{1}{2} \sqrt{c^T A^{-1}} c$$
+Следовательно $x = \frac{-c A^{-1}}{\sqrt{c^T A^{-1} c}}$
+
+\subsection*{Task 2}
+$$ \min_{X \in S_{++}^n} \mathrm{trace}(X) - \log \det X$$
+$$ \mathrm{s.t. } Xz = y \:\:\textit{ где }\:\: y \in \mathbb{R}^n, x\in \mathbb{R}^n, y^Tz= 1 $$
+% Заметим, что последнее условие равносильно $z^TXz = 1$.\\
+% $\Rightarrow$
+% Пусть $Xz=y$ и $y^Tz=1$. Домжножим слева на $z^T$, тогда $z^TXz = z^Ty = 1$\\
+% $\Leftarrow$ 
+% Пусть $z^TXz = 1$ и $y^Tz=1$
+Задача выпуклая, условие Слейтера выполняется, потому что найдется $X^*$ для которого равенство выполянется.\\
+Запишем условие ККТ.\\
+$$L(X, \lambda, \mu) = \mathrm{trace}(X) - \log \det X + \sum_{i=1}^n \lambda_i (X_i z - y_i) = \mathrm{trace}(X) - \log \det X + \lambda (Xz - y)$$
+% при этом $\lambda_i (X_i z - y_i) = 0$
+$$L(X, \lambda, \mu)'_X = I - {X^{-1}}^T + \begin{bmatrix} X_{ij}z_j \lambda_i \end{bmatrix} = 0$$
+Будем искать среди диагональных матриц. Тогда 
+\begin{equation}
+    \begin{cases}
+    1 - X_{ii}^{-1} + X_{ii}z_i\lambda_i = 0\\
+    X_{ii}z_i = y_i 
+    \end{cases}
+\end{equation}
+\begin{equation}
+    \begin{cases}
+    1 - \frac{z_i}{y_i} + y_i\lambda_i = 0\\
+    X_{ii} = \frac{y_i}{z_i} 
+    \end{cases}
+\end{equation}
+Возьмем $\lambda_i = \frac{z_i}{y_i^2}$. 
+Тогда равенство выполняется. Следовательно минимум
+$$ \sum_{i=1}^n \frac{y_i}{z_i} - \log \prod \frac{y_i}{z_i} = 0$$
+Пусть $X \in S_{++}^n$ не диагональная. 
+Представим ее в виде $X = S^{-1}DS$, где $D$ диаогнальная 
+Тогда 
+\begin{align*}
+    f(X) 
+        &= \mathrm{trace}(X) - \log \det X \\ 
+        &= \mathrm{trace}(S^{-1}DS) - \log \det (S^{-1}DS) \\ 
+        &= \mathrm{trace}(D) - \log \det D \\
+        &= f(D)        
+\end{align*}
+Следовательно можно рассматривать только диагональные матрицы.
+
+\subsection*{Task 3}
+Найти вектор минимальной евклидовой нормы из выпуклой оболчки $a_1, \ldots, a_k$.\\
+Будем считать, что вектора $a_1, \ldots a_k$ линейно независимы 
+(всегда можно выбрать линейно независмый набор, порождающий такое же выпуклое множество).\\
+Обоозначим $\begin{bmatrix} a_1 \\ \ldots \\ a_k \end{bmatrix} = A^{-1}$.
+% $$ \| \min_x \begin{bmatrix} a_1 \\ \ldots \\ a_k \end{bmatrix} x \|_1$$
+% $$ \textit{s.t. } 0 \leq x_i \leq 1 $$
+% $$ \sum_{i=1}^n x_i = 1$$
+$$ \min_y \| y \|_2$$
+$$ \textit{s.t. } y = A^{-1} w \Rightarrow w = A y$$
+$$ 0 \leq w_i \leq 1 \Leftrightarrow 0 \leq A_i y \leq 1 $$
+$$ \sum_{i=1}^n w_i = 1 \Leftrightarrow \sum_{i=1}^n A_i y = 1 $$
+Задача выпуклая, условие Слейтера выполнено. \\
+Минимизировать норму, тоже самое что минимизровать квадрат нормы.\\
+Запишем условие ККТ.
+$$ 
+L(y, \mu, \lambda) = 
+\| y \|_2^2 + 
+\sum_{i=1}^n (- \mu_i A_i y) + 
+\sum_{i=1}^{n} (\mu_{i+n} A_i y - 1) + 
+\lambda \left(1 - \sum_{i=1}^n A_i y \right)
+$$
+Условие $\leq 1$ можно убрать, оно автоматически будет 
+выполняться из неотрицательности и суммы 1. 
+$$ 
+L(y, \mu, \lambda) = 
+\| y \|_2^2 + 
+\sum_{i=1}^n (- \mu_i A_i y) + 
+\lambda \left(1 - \sum_{i=1}^n A_i y \right)
+$$
+
+\begin{align*}
+    0 = L(y, \mu, \lambda)'_{y_j} 
+        &= 
+            2y_j + 
+            \sum_{i=1}^n (- \mu_i A_{ij} ) + 
+            \lambda \left(-\sum_{i=1}^n A_{ij} \right) \\
+        &= 
+            2y_j -
+            \sum_{i=1}^n (\mu_i A_{ij} + \lambda A_{ij}) \\
+    \Rightarrow y_j 
+        &= \frac{\sum_{i=1}^n (\mu_i A_{ij} + \lambda A_{ij})}{2} \\
+        &= \frac{\mu A_{:,j} + \overrightarrow{\lambda} A_{:,j}}{2} \\
+    \Rightarrow y 
+        &= \frac{\mu A + \overrightarrow{\lambda} A}{2} \\
+        &= \frac{(\mu + \overrightarrow{\lambda}) A }{2} 
+\end{align*}
+Далее необходимо учесть
+условие дополняющей нежесткости $\mu_i A_i y = 0$ и
+допустимость значений. 
+Но что-то у меня не особо дошло до ответа. 
+
+\subsection*{Task 4}
+$$ \min_x -\sum_{i=1}^n \log (\alpha_i + x_i) $$
+$$ \textit{s.t. } \sum_{i=1}^n x_i = 1$$
+$$ x_i \geq 0$$
+Задача выпуклая, условие Слейтера выполняется. \\
+Запишем условие ККТ. \\
+$$ 
+L(x, \mu, \lambda) = 
+-\sum_{i=1}^n \log(\alpha_i + x_i) + 
+\sum_{i=1}^n -\mu_i x_i + 
+\lambda \left(1 - \sum_{i=1}^n x_i \right)
+$$
+$$ 
+L(x, \mu, \lambda)'_{x_j} = 
+-\frac{1}{\alpha_j + x_j} -\mu_j -\lambda = 0  
+$$
+$$
+x_j = -\frac{1}{\mu_j + \lambda} - \alpha_j
+$$
+Так как 
+\begin{equation*}
+    \begin{cases}
+        \sum_{i=1}^n x_i = \sum_{i=1}^n -\frac{1}{\mu_i + \lambda} - \alpha_i = 1 \\
+        \mu_i x_i = -\frac{\mu_i}{\mu_i + \lambda} - \alpha_i = 0        
+    \end{cases}
+\end{equation*}
+То из уравнений дополняющей нежесткости можно выразить $\mu_i$ через $\lambda, \alpha_i$,
+но так как уравнение квадратное, то возможно два варианта. 
+После чего будем подставлять все возможные варианты в 1 уравнение которое откуда можно найти $\lambda$ и соответсвенно все остальное.
+Так как количество вариантов $2^n$ а каждая проверка занимет $n$ операций, то итоговая сложность $O(n2^n)$. 
+
+\subsection*{Task 5}
+$$ \min_{x} \| x - y \|_2^2 $$
+$$ \textit{s.t. } \sum_{i=1}^n x_i = 1$$
+$$ x_i \geq 0$$
+Задача выпуклая, условие Слейтера выполняется. \\
+Запишем условие ККТ.\\
+$$ 
+L(x, \mu, \lambda) = 
+\| x - y \|_2^2 + 
+\sum_{i=1}^n -\mu_i x_i + 
+\lambda \left(1 - \sum_{i=1}^n x_i\right)
+$$
+\begin{align*}
+    0 = L(x, \mu, \lambda)'_{x_j} 
+        &= 2(x_j - y_j) -\mu_j x_j - \lambda \\
+        &= x_j (2 - \mu_j) - 2y_j - \lambda \\
+    \Rightarrow
+        x_j &= \frac{2 y_j + \lambda}{2 - \mu_j}
+\end{align*} 
+Запишем ограничение и условие дополняющей нежесткости
+\begin{equation*}
+    \begin{cases}
+        \sum_{i=1}^n x_i = \frac{2 y_j + \lambda}{2 - \mu_j} = 1 \\
+        \mu_i x_i = \mu_i\frac{2 y_i + \lambda}{2 - \mu_i} = 0
+    \end{cases}
+\end{equation*}
+\begin{equation*}
+    \begin{cases}
+        \sum_{i=1}^n x_i = \frac{2 y_i + \lambda}{2 - \mu_i} = 1 \\
+        \mu_i (2 y_i + \lambda) = 0
+    \end{cases}
+\end{equation*}
+Выберем один из $2^n$ вариантов где либо $\mu_i = 0$ либо $(2y_i + \lambda)$.
+Тогда мы учтем условие дополняющей нежесткости и при подстановке в первое уравнение у нас останется 1 неизвестная $\lambda$ которую мы сможем найти.
+Таким образом снова сложность $O(n 2^n)$. 
+Что довольно странно, 
+так как казалось бы геометрически нам необходимо 
+просто спроецировать вектор на соответсвующую плоскость 
+и если он не попал в ограничения, взять соответсвующую точку на границе.
+
+\section*{Двойственные задачи}
+\subsection*{Task 1}
+$$ \min_{x} c^T x$$
+$$ \textit{s.t } x_i (1 - x_i) = 0$$
+$$ Ax \leq b$$
+Запишем Лангражиан
+$$
+g(\mu, \lambda) = \inf_{x \in D} L(x, \mu, \lambda) = 
+c^T x + 
+\sum_{i=1}^n \mu_i (A_ix - b_i) + 
+\sum_{i=1}^n \lambda_i x_i (1 - x_i)
+$$
+$$
+L(x, \mu, \lambda)'_{x_j} = 
+c_j + \sum_{i=1}^n \mu_i A_{ij} + \lambda_j (1 - 2x_j) = 0
+$$
+$$ 
+x_j = \frac{c_j + \sum_{i=1}^n \mu_i A_{ij} + \lambda_j}{2}
+$$
+Следовательно двойственная задача 
+$$
+\max_{\mu, \lambda} L([\frac{c_j + \sum_{i=1}^n \mu_i A_{ij} + \lambda_j}{2} \textit{ for j in range(n)}], \mu, \lambda)
+$$
+$$
+\textit{s.t. } \mu_i \geq 0
+$$
+
+
+\end{document}
