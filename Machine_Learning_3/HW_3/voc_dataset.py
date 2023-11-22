@@ -9,32 +9,35 @@ import torch
 import cv2
 import os
 
-VOC_CLASSES = ('background', 'license_plate', 'car')
+VOC_CLASSES = ('background','license_plate','car')
 
 default_mean = [0.485, 0.456, 0.406]
 default_std = [0.229, 0.224, 0.225]
 
+default_mean = [0., 0., 0.]
+default_std = [1, 1, 1]
+
 default_transform = v2.Compose([
-        v2.ToImageTensor(),
-        v2.Resize([300, 300], antialias=True),
-        v2.Normalize(mean=default_mean, std=default_std),
+    v2.ToTensor(),
+    v2.Normalize(mean=default_mean, std=default_std),
+    v2.Resize([300, 300], antialias=True),
 ])
 
 class VOCDetection(data.Dataset):
     def __init__(self, voc_root, annotation_filename, sample_transform=default_transform):
         self.annotation_filename = annotation_filename
         self.sample_transform    = sample_transform
-        self.root                = voc_root  
-        
+        self.root                = voc_root
+
         self.ids = []
-        
+
         with open(self.annotation_filename, 'r') as f:
             for line in f.readlines():
                 line = line.strip()
                 ano_path = os.path.join(self.root, 'Annotations', line + '.xml')
                 img_path = os.path.join(self.root, 'JPEGImages' , line + '.jpg')
                 self.ids.append((img_path, ano_path))
-    
+
     def get_annotations(self, path):
         tree = ET.parse(path)
 
@@ -48,8 +51,8 @@ class VOCDetection(data.Dataset):
                 float(bndbox.find(t).text) - 1
                 for t in ['xmin', 'ymin', 'xmax', 'ymax']
             ]
-            label = VOC_CLASSES.index(child.find('name').text) 
-            
+            label = VOC_CLASSES.index(child.find('name').text)
+
             labels.append(label)
             boxes .append(box  )
 
@@ -60,32 +63,16 @@ class VOCDetection(data.Dataset):
 
         image         = cv2.imread(img_path, cv2.IMREAD_COLOR)
         boxes, labels = self.get_annotations(ano_path)
+
+        image = image.astype(np.float32) #/ 255.0
+        height, width, channels = image.shape
         
-        image = image.astype(np.float32) / 255.
         image = self.sample_transform(image)
-        
-        _, height, width = image.shape
+
         boxes[:, 0::2] /=  width
-        boxes[:, 1::2] /= height
-        
-        return image, torch.from_numpy(boxes), torch.from_numpy(labels)
-    
+        boxes[:, 1::2] /=  height
+
+        return (image - image.min()) / image.max(), torch.from_numpy(boxes), torch.from_numpy(labels)
+
     def __len__(self):
         return len(self.ids)
- 
-if __name__ == '__main__':
-    voc_root = "dataset"
-    
-    train_annotation_filename = os.path.join( voc_root, "ImageSets/Main/trainval.txt" )
-    test_annotation_filename  = os.path.join( voc_root, "ImageSets/Main/test.txt"     )
-    
-    train_dataset = VOCDetection( voc_root, train_annotation_filename )
-    
-    for train_sample in train_dataset:
-        print(train_sample)
-    
-    test_dataset  = VOCDetection( voc_root, test_annotation_filename  )
-
-    for test_sample in test_dataset:
-        print(test_sample)
-

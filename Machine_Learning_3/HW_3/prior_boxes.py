@@ -13,7 +13,7 @@ def prior_boxes(cfg):
     max_sizes     = cfg['max_sizes'    ]
     aspect_ratios = cfg['aspect_ratios']
     clip          = cfg['clip'         ]
-        
+
     prior_box_s = []
     for k, feature_map in enumerate(feature_maps):
         for i, j in product(range(feature_map[0]), range(feature_map[1])):
@@ -191,10 +191,10 @@ def detect_objects(loc_data, conf_data, prior_data, num_classes, overlap_thresho
     """
     variance = [0.1, 0.2]
     device = loc_data.device
-    
+
     num = loc_data.size(0) # batch size
     num_priors = prior_data.size(0)
-    
+
     result_box_ss, result_conf_ss, result_label_ss = [], [], []
     conf_preds = conf_data.transpose(2, 1)
     # Decode predictions into bboxes.
@@ -202,58 +202,27 @@ def detect_objects(loc_data, conf_data, prior_data, num_classes, overlap_thresho
         decoded_boxes = decode(loc_data[i], prior_data, torch.as_tensor(variance))
         # For each class, perform nms
         conf_scores = conf_preds[i].clone()
-        
+
         result_box_s, result_conf_s, result_label_s = [], [], []
-        
+
         for cl in range(1, num_classes):
             c_mask = conf_scores[cl].gt(conf_threshold)
             scores = conf_scores[cl][c_mask]
             if scores.size(0) == 0:
                 continue
-            
+
             l_mask = c_mask.unsqueeze(1).expand_as(decoded_boxes)
             boxes = decoded_boxes[l_mask].view(-1, 4)
             # idx of highest scoring and non-overlapping boxes per class
             ids = torchvision.ops.nms(boxes, scores, overlap_threshold)
             count = ids.size(0)
-            
+
             result_box_s  .append(boxes [ids[:count]])
             result_conf_s .append(scores[ids[:count]])
             result_label_s.append(torch.full((count,), cl))
-        
+
         result_box_ss  .append(torch.cat(result_box_s  , dim=0) if len(result_box_s  ) > 0 else torch.Tensor(0) )
         result_conf_ss .append(torch.cat(result_conf_s , dim=0) if len(result_conf_s ) > 0 else torch.Tensor(0) )
         result_label_ss.append(torch.cat(result_label_s, dim=0) if len(result_label_s) > 0 else torch.Tensor(0) )
-    
+
     return result_box_ss, result_label_ss, result_conf_ss
-
-if __name__ == '__main__':
-    custom_config = {
-     'num_classes': 3,
-     'feature_maps' : [(45,80), (23,40), (12,20), (6,10), (3,5), (2,3)], #ResNet18
-     'min_dim'      : 300,
-     'min_sizes'    : [0.1, 0.20, 0.37, 0.54, 0.71, 1.00],
-     'max_sizes'    : [0.2, 0.37, 0.54, 0.71, 1.00, 1.05],
-     
-     'aspect_ratios': [[2, 3], [2, 3], [2, 3], [2, 3], [2], [2]],
-     'variance'     : [0.1, 0.2],
-     'clip'         :    True,
-    }
-    
-    threshold = 0.9
-    variance  = [0.1, 0.2] 
-
-    prior_box_s = prior_boxes(custom_config)
-    prior_loc_s = torch.zeros(prior_box_s.shape)
-    
-    result_box_s = decode(prior_loc_s, prior_box_s , variance)
-    
-    result_loc_s = encode(result_box_s, prior_box_s, variance)
-    
-    gt_label_s = torch.from_numpy( numpy.array([1, 2]) ) 
-    gt_box_s   = torch.from_numpy( numpy.array([[0.0, 0.0, 0.5, 0.5],[0.5, 0.5, 1.0, 1.0]]) ) 
-    
-    num_gt_objects = 2
-    num_priors     = prior_box_s.shape[0]
-    
-    loc, conf = match(threshold, gt_box_s, prior_box_s, variance, gt_label_s)
